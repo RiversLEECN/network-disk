@@ -1,0 +1,29 @@
+在Apache上安装配置mod_xsendfile
+
+1. 在红帽上安装模块mod_xsendfile
+
+    红帽6：
+    yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+
+    红帽7：
+    yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+2. 安装mod_xsendfile
+
+    yum install mod_xsendfile
+
+3. 配置apached，在配置文件中增加以下配置：
+
+    XSendFile On
+
+4. 重启apache服务器
+
+5. 在Django程序中，使用类似以下的代码即可：
+
+    @login_required
+    def download(request, filename=''):  
+        abs_filename = get_absolute_filename(filename)
+        response = django.http.HttpResponse() # 200 OK
+        del response['content-type'] # 让网页服务器设置这个值
+        response['X-Sendfile'] = abs_filename
+        return response
